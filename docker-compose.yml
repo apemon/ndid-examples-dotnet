@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  ndid-examples-dotnet:
+    image: ${DOCKER_REGISTRY}ndidexamplesdotnet
+    build:
+      context: .
+      dockerfile: ndid-examples-dotnet/Dockerfile
+
+  idp:
+    image: ${DOCKER_REGISTRY}idp
+    build:
+      context: .
+      dockerfile: idp/Dockerfile
+

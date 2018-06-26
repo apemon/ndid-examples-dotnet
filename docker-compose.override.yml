@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  ndid-examples-dotnet:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  idp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
