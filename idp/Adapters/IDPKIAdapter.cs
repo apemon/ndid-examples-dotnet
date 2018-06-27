@@ -7,5 +7,8 @@ namespace idp.Adapters
 {
     interface IDPKIAdapter
     {
+        Task GenNewKey(string keyName);
+        Task<string> GetPubKey(string keyName);
+        Task<string> Sign(string key, string text);
     }
 }

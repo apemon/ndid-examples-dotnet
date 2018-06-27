@@ -13,6 +13,8 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "KEYPATH": "D:/dotnet-project/persistance/keys",
+        "API_SERVER_ADDRESS": "http://159.89.198.232:8101",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

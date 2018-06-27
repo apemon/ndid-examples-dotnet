@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using idp.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -59,6 +60,9 @@ namespace idp
                 builder.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
+
+            // Exception handling
+            app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
             app.UseMvc();
         }
