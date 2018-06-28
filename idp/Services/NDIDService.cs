@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using idp.Models;
+using idp.Utils;
 using Newtonsoft.Json;
 
 namespace idp.Services
@@ -20,6 +21,11 @@ namespace idp.Services
             _dpki = dpki;
             _config = config;
             _apiServerAddress = _config.GetAPIServerAddress();
+        }
+
+        public async Task<NDIDGetCallbackModel> GetCallback()
+        {
+            return await NDIDWebClient.GetCallback(_apiServerAddress);
         }
 
         public Task<string> AccessorSign(string key, string text)

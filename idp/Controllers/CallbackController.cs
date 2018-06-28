@@ -19,6 +19,13 @@ namespace idp.Controllers
             _ndid = ndid;
         }
 
+        [HttpGet]
+        [Route("get")]
+        public async Task<IActionResult> GetCallback()
+        {
+            return Ok(await _ndid.GetCallback());
+        }
+
         [HttpPost]
         [Route("accessor")]
         public Task<IActionResult> AccessorSign()

@@ -10,5 +10,6 @@ namespace idp.Services
     {
         Task<string> CreateNewIdentity(NewIdentityModel newIdentity);
         Task<string> AccessorSign(string key, string text);
+        Task<NDIDGetCallbackModel> GetCallback();
     }
 }
