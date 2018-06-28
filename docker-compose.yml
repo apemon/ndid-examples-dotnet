@@ -1,15 +1,15 @@
 version: '3.4'
 
 services:
-  ndid-examples-dotnet:
-    image: ${DOCKER_REGISTRY}ndidexamplesdotnet
-    build:
-      context: .
-      dockerfile: ndid-examples-dotnet/Dockerfile
+  examples-idp-3:
+    image: ndidplatform/ndid-examples-idp-dotnet
+    environment:
+      - KEYPATH=/app/pesistance/keys
+      - API_SERVER_ADDRESS=http://api-idp-3:8080
+    ports:
+      - "8002:80"
 
-  idp:
-    image: ${DOCKER_REGISTRY}idp
-    build:
-      context: .
-      dockerfile: idp/Dockerfile
-
+networks:
+  default:
+    external:
+      name: docker_ndidplatform

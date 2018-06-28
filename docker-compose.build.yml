@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  ndid-examples-idp-dotnet:
+    image: ndidplatform/ndid-examples-idp-dotnet
+    build:
+      context: .
+      dockerfile: idp/Dockerfile
