@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using idp.Services;
 using idp.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,11 @@ namespace idp
 
             // Enable CORS
             services.AddCors();
+
+            // Add application services via dependencies injection
+            services.AddTransient<IConfigurationService, EnvironmentConfigurationService>();
+            services.AddTransient<INDIDService, NDIDService>();
+            services.AddTransient<IDPKIService, FileBasedDPKIServicec>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

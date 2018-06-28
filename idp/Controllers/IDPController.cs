@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using idp.Adapters;
+using idp.Services;
 using idp.Models;
 using idp.Requests;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +14,11 @@ namespace idp.Controllers
     [Route("api/IDP")]
     public class IDPController : Controller
     {
-        private INDIDAdapter _ndid;
+        private INDIDService _ndid;
 
-        public IDPController()
+        public IDPController(INDIDService ndid)
         {
-            // dependency injecton
-            _ndid = new NDIDAdapter();    
+            _ndid = ndid;        
         }
 
         /*
