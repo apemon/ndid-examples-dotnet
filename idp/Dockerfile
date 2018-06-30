@@ -12,6 +12,7 @@ RUN dotnet build idp.csproj -c Release -o /app
 
 FROM build AS publish
 RUN dotnet publish idp.csproj -c Release -o /app
+RUN cd /app && mkdir persistance && cd persistance && mkdir keys
 
 FROM base AS final
 WORKDIR /app

@@ -6,6 +6,8 @@ services:
     environment:
       - KEYPATH=/app/pesistance/keys
       - API_SERVER_ADDRESS=http://api-idp-3:8080
+    volumes:
+      - persistance:/app/persistance
     ports:
       - "8002:80"
 

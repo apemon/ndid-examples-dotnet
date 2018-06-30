@@ -21,16 +21,6 @@ namespace idp.Controllers
             _ndid = ndid;        
         }
 
-        /*
-        public IDPController(INDIDAdapter ndid, IDPKIAdapter dpki)
-        {
-            if (ndid == null) _ndid = new NDIDAdapter();
-            else _ndid = ndid;
-            if (dpki == null) _dpki = new FileBasedDPKIAdapter();
-            else _dpki = dpki;
-        }
-        */
-
         [HttpPost]
         [Route("identity")]
         public async Task<IActionResult> CreateNewIdentity(IdentityRequest request)
