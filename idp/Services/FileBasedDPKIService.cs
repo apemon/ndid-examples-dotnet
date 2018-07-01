@@ -56,7 +56,7 @@ namespace idp.Services
 
         public Task<string> Sign(string key, string text)
         {
-            throw new NotImplementedException();
+            // load private key
         }
     }
 }

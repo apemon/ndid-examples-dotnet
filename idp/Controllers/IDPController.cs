@@ -7,6 +7,7 @@ using idp.Models;
 using idp.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace idp.Controllers
 {
@@ -15,21 +16,31 @@ namespace idp.Controllers
     public class IDPController : Controller
     {
         private INDIDService _ndid;
+        private ILogger _logger;
 
-        public IDPController(INDIDService ndid)
+        public IDPController(INDIDService ndid, ILogger<IDPController> logger)
         {
-            _ndid = ndid;        
+            _ndid = ndid;
+            _logger = logger;
         }
 
         [HttpPost]
         [Route("identity")]
-        public async Task<IActionResult> CreateNewIdentity(IdentityRequest request)
+        public async Task<IActionResult> CreateNewIdentity([FromBody] IdentityRequest request)
         {
             NewIdentityModel iden = new NewIdentityModel();
             iden.NameSpace = request.NameSpace;
             iden.Identifier = request.Identifier;
             await _ndid.CreateNewIdentity(iden);
             throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("callback")]
+        public async Task<IActionResult> UpdateCallbackUrl([FromBody] NDIDGetCallbackModel model)
+        {
+            await _ndid.SetCallback(model);
+            return NoContent();
         }
 
         [HttpPost]

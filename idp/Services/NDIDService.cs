@@ -28,9 +28,14 @@ namespace idp.Services
             return await NDIDWebClient.GetCallback(_apiServerAddress);
         }
 
-        public Task<string> AccessorSign(string key, string text)
+        public async Task SetCallback(NDIDGetCallbackModel model)
         {
-            throw new NotImplementedException();
+            await NDIDWebClient.SetCallback(_apiServerAddress, model);
+        }
+
+        public async Task<string> AccessorSign(string key, string text)
+        {
+            return await _dpki.Sign(key, text);
         }
 
         public async Task<string> CreateNewIdentity(NewIdentityModel iden)
@@ -60,6 +65,7 @@ namespace idp.Services
                 var result = client.PostAsync(url, content).Result;
                 if (!result.IsSuccessStatusCode) throw new Exception();
             }
+            // the api server will callback for assertsor to sign the transaction
             throw new NotImplementedException();
         }
     }

@@ -4,7 +4,7 @@ services:
   examples-idp-3:
     image: ndidplatform/ndid-examples-idp-dotnet
     environment:
-      - KEYPATH=/app/pesistance/keys
+      - KEYPATH=/keys
       - API_SERVER_ADDRESS=http://api-idp-3:8080
     volumes:
       - persistance:/app/persistance

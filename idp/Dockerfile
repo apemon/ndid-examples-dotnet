@@ -17,4 +17,5 @@ RUN cd /app && mkdir persistance && cd persistance && mkdir keys
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
+RUN cd / && mkdir keys && mkdir db
 ENTRYPOINT ["dotnet", "idp.dll"]

@@ -20,6 +20,13 @@ namespace idp.Utils
             return response;
         }
 
+        public static async Task SetCallback(string baseAddress, NDIDGetCallbackModel model)
+        {
+            string url = new Uri(new Uri(baseAddress), "idp/callback").ToString();
+            string jsonBody = JsonConvert.SerializeObject(model);
+            string result = await _CallAPI("POST", url, jsonBody);
+        }
+
         private static async Task<string> _CallAPI(string method, string url, string jsonBody = null)
         {
             using (HttpClient client = new HttpClient())
