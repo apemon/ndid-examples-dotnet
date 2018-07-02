@@ -16,11 +16,29 @@ namespace idp.Controllers
     {
         private INDIDService _ndid;
         private ILogger _logger;
+        private IPersistanceStorageService _db;
 
-        public CallbackController(INDIDService ndid, ILogger<CallbackController> logger)
+        public CallbackController(INDIDService ndid, ILogger<CallbackController> logger, IPersistanceStorageService db)
         {
             _ndid = ndid;
             _logger = logger;
+            _db = db;
+        }
+
+        [HttpGet]
+        [Route("retrieve/{key}")]
+        public IActionResult GetDB([FromRoute] string key)
+        {
+            string result = _db.GetAccessorSign(key);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("save")]
+        public IActionResult SaveDB(AccessorSignRequestModel model)
+        {
+            _db.SaveAccessorSign(model.ReferenceId, model.SId);
+            return NoContent();
         }
 
         [HttpGet]
@@ -33,10 +51,11 @@ namespace idp.Controllers
 
         [HttpPost]
         [Route("accessor")]
-        public Task<IActionResult> AccessorSign([FromBody] AccessorSignRequestModel request)
+        public async Task<IActionResult> AccessorSign([FromBody] AccessorSignRequestModel request)
         {
-            _ndid.AccessorSign("hello", "hahaha");
-            throw new NotImplementedException();
+            // retrive 
+            string signedString = await _ndid.AccessorSign(request.ReferenceId, request.SIdHash);
+            return Ok(signedString);
         }
 
 

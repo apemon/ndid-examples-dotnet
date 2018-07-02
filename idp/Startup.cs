@@ -41,6 +41,7 @@ namespace idp
             services.AddTransient<IConfigurationService, EnvironmentConfigurationService>();
             services.AddTransient<INDIDService, NDIDService>();
             services.AddTransient<IDPKIService, FileBasedDPKIServicec>();
+            services.AddSingleton<IPersistanceStorageService, LiteDBStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

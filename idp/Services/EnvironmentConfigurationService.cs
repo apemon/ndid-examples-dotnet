@@ -29,6 +29,11 @@ namespace idp.Services
             return _GetConfig("API_SERVER_ADDRESS");
         }
 
+        public string GetPersistancePath()
+        {
+            return _GetConfig("PERSISTANCEPATH");
+        }
+
         private string _GetConfig(string key)
         {
             if (!_configs.ContainsKey(key))

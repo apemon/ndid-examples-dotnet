@@ -14,12 +14,14 @@ namespace idp.Services
     {
         private IDPKIService _dpki;
         private IConfigurationService _config;
+        private IPersistanceStorageService _db;
         private string _apiServerAddress;
 
-        public NDIDService(IDPKIService dpki, IConfigurationService config)
+        public NDIDService(IDPKIService dpki, IConfigurationService config, IPersistanceStorageService db)
         {
             _dpki = dpki;
             _config = config;
+            _db = db;
             _apiServerAddress = _config.GetAPIServerAddress();
         }
 
@@ -35,7 +37,8 @@ namespace idp.Services
 
         public async Task<string> AccessorSign(string key, string text)
         {
-            return await _dpki.Sign(key, text);
+            string sid = _db.GetAccessorSign(key);
+            return await _dpki.Sign(sid, text);
         }
 
         public async Task<string> CreateNewIdentity(NewIdentityModel iden)
@@ -53,8 +56,9 @@ namespace idp.Services
             newIdentity.AccessorPubKey = pubKey;
             newIdentity.ReferenceId = Guid.NewGuid().ToString();
             newIdentity.IAL = 2.3m;
+            _db.SaveAccessorSign(newIdentity.ReferenceId, sid);
             // 4. check response from api reqeust
-            using(HttpClient client = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
                 Uri url = new Uri(_apiServerAddress +  "/identity");
                 client.DefaultRequestHeaders.Accept.Clear();

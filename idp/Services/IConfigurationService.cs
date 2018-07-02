@@ -10,5 +10,6 @@ namespace idp.Services
         string GetConfig(string key);
         string GetKeyPath();
         string GetAPIServerAddress();
+        string GetPersistancePath();
     }
 }
