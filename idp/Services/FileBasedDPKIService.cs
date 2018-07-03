@@ -2,6 +2,7 @@
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Security;
 using System;
@@ -63,15 +64,7 @@ namespace idp.Services
             {
                 AsymmetricCipherKeyPair keyPair = (AsymmetricCipherKeyPair) new PemReader(privReader).ReadObject();
                 RsaPrivateCrtKeyParameters privParams = (RsaPrivateCrtKeyParameters)keyPair.Private;
-                RSAParameters rsaParams = new RSAParameters();
-                rsaParams.Modulus = privParams.Modulus.ToByteArrayUnsigned();
-                rsaParams.P = privParams.P.ToByteArrayUnsigned();
-                rsaParams.Q = privParams.Q.ToByteArrayUnsigned();
-                rsaParams.DP = privParams.DP.ToByteArrayUnsigned();
-                rsaParams.DQ = privParams.DQ.ToByteArrayUnsigned();
-                rsaParams.InverseQ = privParams.QInv.ToByteArrayUnsigned();
-                rsaParams.D = privParams.Exponent.ToByteArrayUnsigned();
-                rsaParams.Exponent = privParams.PublicExponent.ToByteArrayUnsigned();
+                RSAParameters rsaParams = _ConvertRSAParameters(privParams);
                 string signedResult;
                 using(RSA rsa = RSA.Create())
                 {
@@ -81,6 +74,35 @@ namespace idp.Services
                 }
                 return Task.FromResult(signedResult);
             }
+        }
+
+        private static RSAParameters _ConvertRSAParameters(RsaPrivateCrtKeyParameters privKey)
+        {
+            RSAParameters rp = new RSAParameters();
+            rp.Modulus = privKey.Modulus.ToByteArrayUnsigned();
+            rp.Exponent = privKey.PublicExponent.ToByteArrayUnsigned();
+            rp.P = privKey.P.ToByteArrayUnsigned();
+            rp.Q = privKey.Q.ToByteArrayUnsigned();
+            rp.D = _ConvertRSAParametersField(privKey.Exponent, rp.Modulus.Length);
+            rp.DP = _ConvertRSAParametersField(privKey.DP, rp.P.Length);
+            rp.DQ = _ConvertRSAParametersField(privKey.DQ, rp.Q.Length);
+            rp.InverseQ = _ConvertRSAParametersField(privKey.QInv, rp.Q.Length);
+            return rp;
+        }
+
+        private static byte[] _ConvertRSAParametersField(BigInteger n, int size)
+        {
+            byte[] bs = n.ToByteArrayUnsigned();
+
+            if (bs.Length == size)
+                return bs;
+
+            if (bs.Length > size)
+                throw new ArgumentException("Specified size too small", "size");
+
+            byte[] padded = new byte[size];
+            Array.Copy(bs, 0, padded, size - bs.Length, bs.Length);
+            return padded;
         }
     }
 }
