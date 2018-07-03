@@ -69,7 +69,9 @@ namespace idp
                 .AllowAnyHeader());
 
             // Exception handling
-            app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+            // Request/Response logging
+            app.UseMiddleware<RequestLoggingMiddleware>();
 
             app.UseMvc();
         }

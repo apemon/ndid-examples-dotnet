@@ -8,8 +8,8 @@ services:
       - PERSISTANCEPATH=/persistances
       - API_SERVER_ADDRESS=http://api-idp-3:8080
     volumes:
-      - persistance:/persistances
-      - keys:/keys
+      - ./persistance:/persistances
+      - ./keys:/keys
     ports:
       - "8002:80"
 

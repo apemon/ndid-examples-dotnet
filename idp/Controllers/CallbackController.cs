@@ -25,37 +25,15 @@ namespace idp.Controllers
             _db = db;
         }
 
-        [HttpGet]
-        [Route("retrieve/{key}")]
-        public IActionResult GetDB([FromRoute] string key)
-        {
-            string result = _db.GetAccessorSign(key);
-            return Ok(result);
-        }
-
-        [HttpPost]
-        [Route("save")]
-        public IActionResult SaveDB(AccessorSignRequestModel model)
-        {
-            _db.SaveAccessorSign(model.ReferenceId, model.SId);
-            return NoContent();
-        }
-
-        [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> GetCallback()
-        {
-            _logger.LogInformation("add identity");
-            return Ok(await _ndid.GetCallback());
-        }
-
         [HttpPost]
         [Route("accessor")]
         public async Task<IActionResult> AccessorSign([FromBody] AccessorSignRequestModel request)
         {
             // retrive 
             string signedString = await _ndid.AccessorSign(request.ReferenceId, request.SIdHash);
-            return Ok(signedString);
+            AccessorSignResponseModel response = new AccessorSignResponseModel();
+            response.Signature = signedString;
+            return Ok(response);
         }
 
 
