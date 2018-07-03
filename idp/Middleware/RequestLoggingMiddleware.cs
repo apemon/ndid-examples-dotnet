@@ -34,9 +34,10 @@ namespace idp.Middleware
 
                 try
                 {
+                    context.Request.EnableRewind();
                     // Log request
                     _logger.LogInformation(await FormatRequest(context.Request));
-
+                    context.Request.Body.Position = 0;
                     await _next(context);
 
                     // Log response
@@ -64,7 +65,6 @@ namespace idp.Middleware
         private static async Task<string> FormatRequest(HttpRequest request)
         {
             Stream body = request.Body;
-            request.EnableRewind();
             byte[] buffer = new byte[Convert.ToInt32(request.ContentLength)];
             await request.Body.ReadAsync(buffer, 0, buffer.Length);
             string bodyAsText = Encoding.UTF8.GetString(buffer);
