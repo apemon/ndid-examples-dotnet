@@ -24,6 +24,12 @@ namespace idp.Models
         [DataMember(Name = "sign_method")]
         public string SignMethod { get; set; }
 
+        [DataMember(Name = "type")]
+        public string Type { get; set; }
+
+        [DataMember(Name = "padding")]
+        public string Padding { get; set; }
+
         [DataMember(Name = "accessor_id")]
         public string AccessorId { get; set; }
 
