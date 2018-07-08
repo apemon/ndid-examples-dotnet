@@ -55,7 +55,7 @@ namespace idp.Services
             newIdentity.AccessorType = "RSA";
             newIdentity.AccessorPubKey = pubKey;
             newIdentity.ReferenceId = Guid.NewGuid().ToString();
-            newIdentity.CallbackUrl = new Uri(new Uri(_config.GetCallbackPath()), "accessor").ToString();
+            newIdentity.CallbackUrl = new Uri(new Uri(_config.GetCallbackPath()), "api/callback/accessor").ToString();
             newIdentity.IAL = 2.3m;
             _db.SaveAccessorSign(newIdentity.ReferenceId, sid);
             // 4. check response from api reqeust
