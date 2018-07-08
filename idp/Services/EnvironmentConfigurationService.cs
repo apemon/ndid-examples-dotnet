@@ -34,6 +34,11 @@ namespace idp.Services
             return _GetConfig("PERSISTANCEPATH");
         }
 
+        public string GetCallbackPath()
+        {
+            return _GetConfig("CALLBACK_URL");
+        }
+
         private string _GetConfig(string key)
         {
             if (!_configs.ContainsKey(key))

@@ -11,5 +11,6 @@ namespace idp.Services
         string GetKeyPath();
         string GetAPIServerAddress();
         string GetPersistancePath();
+        string GetCallbackPath();
     }
 }

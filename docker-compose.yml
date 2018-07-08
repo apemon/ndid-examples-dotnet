@@ -7,6 +7,7 @@ services:
       - KEYPATH=/keys
       - PERSISTANCEPATH=/persistances
       - API_SERVER_ADDRESS=http://api-idp-3:8080
+      - CALLBACK_URL="http://examples-idp-3:80/api/callback"
     volumes:
       - ./persistance:/persistances
       - ./keys:/keys

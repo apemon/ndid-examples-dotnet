@@ -18,6 +18,9 @@ namespace idp.Models
         [DataMember(Name = "reference_id")]
         public string ReferenceId { get; set; }
 
+        [DataMember(Name = "callback_url")]
+        public string CallbackUrl { get; set; }
+
         [DataMember(Name = "accessor_type")]
         public string AccessorType { get; set; }
 
