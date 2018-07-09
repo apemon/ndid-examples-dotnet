@@ -36,6 +36,7 @@ namespace idp.Middleware
             var code = HttpStatusCode.InternalServerError;
             BaseResponse response = new BaseResponse();
             response.ErrorCode = "001";
+            response.ErrorDescription = JsonConvert.SerializeObject(ex);
 
             string result = JsonConvert.SerializeObject(response);
             context.Response.ContentType = "application/json";
