@@ -12,5 +12,7 @@ namespace idp.Services
         Task<string> AccessorSign(string key, string text);
         Task<NDIDGetCallbackModel> GetCallback();
         Task SetCallback(NDIDGetCallbackModel model);
+        Task HandleCreateIdentityResultCallback(NDIDCallbackRequestModel model);
+        Task HandleCreateIdentityRequestCallback(NDIDCallbackRequestModel model);
     }
 }

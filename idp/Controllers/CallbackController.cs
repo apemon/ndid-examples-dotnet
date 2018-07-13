@@ -14,11 +14,11 @@ namespace idp.Controllers
     [Route("api/callback")]
     public class CallbackController : Controller
     {
-        private INDIDService _ndid;
+        private NDIDService _ndid;
         private ILogger _logger;
         private IPersistanceStorageService _db;
 
-        public CallbackController(INDIDService ndid, ILogger<CallbackController> logger, IPersistanceStorageService db)
+        public CallbackController(NDIDService ndid, ILogger<CallbackController> logger, IPersistanceStorageService db)
         {
             _ndid = ndid;
             _logger = logger;
@@ -36,6 +36,20 @@ namespace idp.Controllers
             return Ok(response);
         }
 
-
+        [HttpPost]
+        [Route("identity")]
+        public async Task<IActionResult> IdentityResult([FromBody] NDIDCallbackRequestModel request)
+        {
+            if (request.Type == NDIDConstant.CallbackType.ADD_IDENTITY_REQUEST_RESULT)
+            {
+                await _ndid.HandleCreateIdentityRequestCallback(request);
+            }
+            else if (request.Type == NDIDConstant.CallbackType.ADD_IDENTITY_RESULT)
+            {
+                await _ndid.HandleCreateIdentityResultCallback(request);
+            }
+            else throw new NotImplementedException();
+            return NoContent();
+        }
     }
 }

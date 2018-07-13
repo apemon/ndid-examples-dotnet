@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using idp.Models;
 using idp.Utils;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace idp.Services
@@ -15,13 +16,18 @@ namespace idp.Services
         private IDPKIService _dpki;
         private IConfigurationService _config;
         private IPersistanceStorageService _db;
+        private ILogger _logger;
         private string _apiServerAddress;
 
-        public NDIDService(IDPKIService dpki, IConfigurationService config, IPersistanceStorageService db)
+        public NDIDService(IDPKIService dpki, 
+            IConfigurationService config, 
+            IPersistanceStorageService db,
+            ILogger<NDIDService> logger)
         {
             _dpki = dpki;
             _config = config;
             _db = db;
+            _logger = logger;
             _apiServerAddress = _config.GetAPIServerAddress();
         }
 
@@ -37,6 +43,7 @@ namespace idp.Services
 
         public async Task<string> AccessorSign(string key, string text)
         {
+            _logger.LogInformation(text);
             string sid = _db.GetAccessorSign(key);
             return await _dpki.Sign(sid, text);
         }
@@ -55,13 +62,13 @@ namespace idp.Services
             newIdentity.AccessorType = "RSA";
             newIdentity.AccessorPubKey = pubKey;
             newIdentity.ReferenceId = Guid.NewGuid().ToString();
-            newIdentity.CallbackUrl = new Uri(new Uri(_config.GetCallbackPath()), "api/callback/accessor").ToString();
+            newIdentity.CallbackUrl = new Uri(new Uri(_config.GetCallbackPath()), "api/callback/identity").ToString();
             newIdentity.IAL = 2.3m;
             _db.SaveAccessorSign(newIdentity.ReferenceId, sid);
             // 4. check response from api reqeust
             using (HttpClient client = new HttpClient())
             {
-                Uri url = new Uri(_apiServerAddress +  "/identity");
+                Uri url = new Uri(_apiServerAddress +  "/v2/identity");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(
                     new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
@@ -73,5 +80,16 @@ namespace idp.Services
             // the api server will callback for assertsor to sign the transaction
             throw new NotImplementedException();
         }
+
+        public Task HandleCreateIdentityResultCallback(NDIDCallbackRequestModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task HandleCreateIdentityRequestCallback(NDIDCallbackRequestModel model)
+        {
+            throw new NotImplementedException();
+        }
     }
+
 }
