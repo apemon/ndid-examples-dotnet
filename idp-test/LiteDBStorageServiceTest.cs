@@ -32,7 +32,7 @@ namespace idp_test
                 AccessorId = "hello",
                 Secret = "this should be secret"
             });
-            _db.SaveUser(user);
+            long id = _db.CreateNewUser(user);
             
             NDIDUserModel retrievedUser = _db.FindUser(user.NameSpace, user.Identifier);
             retrievedUser.Should().BeEquivalentTo<NDIDUserModel>(user);
@@ -54,6 +54,20 @@ namespace idp_test
             actual_value1.Should().Equals(value1);
             string actual_value2 = _db.GetReferecne(referenceId, key2);
             actual_value2.Should().Equals(value2);
+        }
+
+        [Fact]
+        public void RemoveReference()
+        {
+            string referenceId = "E3DEC745-7415-45ED-897B-C6275DBA7510";
+            string key1 = "hello";
+            string value1 = "world";
+            string key2 = "alice";
+            string value2 = "wonderland";
+            _db.SaveReference(referenceId, key1, value1);
+            _db.SaveReference(referenceId, key2, value2);
+            _db.RemoveReference(referenceId);
+            Assert.Throws< NullReferenceException>(() => _db.GetReferecne(referenceId, key1));
         }
 
         // clean up data

@@ -8,11 +8,13 @@ namespace idp.Services
 {
     public interface INDIDService
     {
-        Task<string> CreateNewIdentity(NewIdentityModel newIdentity);
+        Task CreateNewIdentity(NewIdentityModel newIdentity);
         Task<string> AccessorSign(string key, string text);
         Task<NDIDGetCallbackModel> GetCallback();
         Task SetCallback(NDIDGetCallbackModel model);
-        Task HandleCreateIdentityResultCallback(NDIDCallbackRequestModel model);
-        Task HandleCreateIdentityRequestCallback(NDIDCallbackRequestModel model);
+        void HandleCreateIdentityResultCallback(NDIDCallbackRequestModel model);
+        void HandleCreateIdentityRequestCallback(NDIDCallbackRequestModel model);
+        Task HandleCreateIdentityResultCallbackAsync(NDIDCallbackRequestModel model);
+        Task HandleCreateIdentityRequestCallbackAsync(NDIDCallbackRequestModel model);
     }
 }

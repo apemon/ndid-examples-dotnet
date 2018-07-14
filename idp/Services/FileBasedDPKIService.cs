@@ -57,6 +57,18 @@ namespace idp.Services
             return await File.ReadAllTextAsync(fileName, Encoding.UTF8);
         }
 
+        public void UpdateKey(string oldKeyName, string newKeyName)
+        {
+            string old_pub = Path.Combine(_keyPath, oldKeyName + ".pub");
+            string new_pub = Path.Combine(_keyPath, newKeyName + ".pub");
+            File.Copy(old_pub, new_pub);
+            string old_priv = Path.Combine(_keyPath, oldKeyName + ".asc");
+            string new_priv = Path.Combine(_keyPath, newKeyName + ".asc");
+            File.Copy(old_priv, new_priv);
+            File.Delete(old_pub);
+            File.Delete(old_priv);
+        }
+
         public Task<string> Sign(string key, string text)
         {
             string fileName = Path.Combine(_keyPath, key + ".asc");
@@ -103,11 +115,6 @@ namespace idp.Services
             byte[] padded = new byte[size];
             Array.Copy(bs, 0, padded, size - bs.Length, bs.Length);
             return padded;
-        }
-
-        public Task UpdateKey(string oldKeyName, string newKeyName)
-        {
-            throw new NotImplementedException();
         }
     }
 }

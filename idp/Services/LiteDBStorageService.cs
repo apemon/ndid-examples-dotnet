@@ -82,13 +82,23 @@ namespace idp.Services
             }
         }
 
-        public void SaveUser(NDIDUserModel user)
+        public long CreateNewUser(NDIDUserModel user)
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
                 LiteCollection<NDIDUserDBModel> users = db.GetCollection<NDIDUserDBModel>(COLLECTION_USER);
                 NDIDUserDBModel model = _mapper.Map<NDIDUserDBModel>(user);
-                users.Insert(model);
+                long id = users.Insert(model);
+                return id;
+            }
+        }
+
+        public void RemoveReference(string referenceId)
+        {
+            using (LiteDatabase db = new LiteDatabase(_persistancePath))
+            {
+                LiteCollection<ReferenceDBModel> references = db.GetCollection<ReferenceDBModel>(COLLECTION_REFERENCE);
+                references.Delete(x => x.ReferenceId == referenceId);
             }
         }
     }

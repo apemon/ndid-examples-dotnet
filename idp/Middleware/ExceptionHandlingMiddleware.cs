@@ -35,7 +35,7 @@ namespace idp.Middleware
             // handle exception
             var code = HttpStatusCode.InternalServerError;
             BaseResponse response = new BaseResponse();
-            response.ErrorCode = "001";
+            response.ErrorCode = "999";
             response.ErrorDescription = JsonConvert.SerializeObject(ex);
 
             string result = JsonConvert.SerializeObject(response);

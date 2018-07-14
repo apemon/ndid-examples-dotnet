@@ -42,11 +42,11 @@ namespace idp.Controllers
         {
             if (request.Type == NDIDConstant.CallbackType.ADD_IDENTITY_REQUEST_RESULT)
             {
-                await _ndid.HandleCreateIdentityRequestCallback(request);
+                _ndid.HandleCreateIdentityRequestCallback(request);
             }
             else if (request.Type == NDIDConstant.CallbackType.ADD_IDENTITY_RESULT)
             {
-                await _ndid.HandleCreateIdentityResultCallback(request);
+                await _ndid.HandleCreateIdentityResultCallbackAsync(request);
             }
             else throw new NotImplementedException();
             return NoContent();

@@ -48,7 +48,7 @@ namespace idp.Services
             return await _dpki.Sign(sid, text);
         }
 
-        public async Task<string> CreateNewIdentity(NewIdentityModel iden)
+        public async Task CreateNewIdentity(NewIdentityModel iden)
         {
             // 1. generate new keypair
             NewIdentityModel newIdentity = new NewIdentityModel();
@@ -65,6 +65,8 @@ namespace idp.Services
             newIdentity.CallbackUrl = new Uri(new Uri(_config.GetCallbackPath()), "api/callback/identity").ToString();
             newIdentity.IAL = 2.3m;
             _db.SaveAccessorSign(newIdentity.ReferenceId, sid);
+            _db.SaveReference(newIdentity.ReferenceId, "sid", sid);
+            //_db.SaveUser(newUser);
             // 4. check response from api reqeust
             using (HttpClient client = new HttpClient())
             {
@@ -77,19 +79,63 @@ namespace idp.Services
                 var result = client.PostAsync(url, content).Result;
                 if (!result.IsSuccessStatusCode) throw new Exception();
             }
-            // the api server will callback for assertsor to sign the transaction
-            throw new NotImplementedException();
         }
 
-        public Task HandleCreateIdentityResultCallback(NDIDCallbackRequestModel model)
+        /// <summary>
+        /// this method will handle identity request response from ndid api. It will do as follows
+        /// - check for existing user
+        /// - get accessor_id and store it
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public void HandleCreateIdentityRequestCallback(NDIDCallbackRequestModel model)
+        {
+            if (model.IsSuccess)
+            {
+                _db.SaveReference(model.ReferenceId, "request_id", model.RequestId);
+                _db.SaveReference(model.ReferenceId, "accessor_id", model.AccessorId);
+            } else
+            {
+                _db.RemoveReference(model.ReferenceId);
+            }
+        }
+
+        public async Task HandleCreateIdentityResultCallbackAsync(NDIDCallbackRequestModel model)
+        {
+            if (model.IsSuccess)
+            {
+                string sid = _db.GetReferecne(model.ReferenceId, "sid");
+                string[] parts = sid.Split('-');
+                NDIDUserModel user = new NDIDUserModel();
+                user.NameSpace = parts[0];
+                user.Identifier = parts[1];
+                string accessor_id = _db.GetReferecne(model.ReferenceId, "accessor_id");
+                NDIDAccessorModel accessor = new NDIDAccessorModel();
+                accessor.AccessorId = accessor_id;
+                accessor.Secret = model.Secret;
+                // update key
+                string newKeyName = sid + "_" + "0";
+                // not use base64 file name because windows cannot support filename with "/" charactor
+                _dpki.UpdateKey(sid, newKeyName);
+                string pubKey = await _dpki.GetPubKey(newKeyName);
+                accessor.AccessorPubKey = pubKey;
+                user.Accessors.Add(accessor);
+                // save new user
+                _db.CreateNewUser(user);
+                // remove all referenceId
+                _db.RemoveReference(model.ReferenceId);
+            }
+            else throw new ApplicationException();
+        }
+
+        void INDIDService.HandleCreateIdentityResultCallback(NDIDCallbackRequestModel model)
         {
             throw new NotImplementedException();
         }
 
-        public Task HandleCreateIdentityRequestCallback(NDIDCallbackRequestModel model)
+        public Task HandleCreateIdentityRequestCallbackAsync(NDIDCallbackRequestModel model)
         {
             throw new NotImplementedException();
         }
     }
-
 }

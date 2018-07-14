@@ -12,7 +12,8 @@ namespace idp.Services
         string GetAccessorSign(string id);
         void SaveReference(string referenceId, string type, string value);
         string GetReferecne(string referenceId, string type);
-        void SaveUser(NDIDUserModel user);
+        void RemoveReference(string referenceId);
+        long CreateNewUser(NDIDUserModel user);
         NDIDUserModel FindUser(string namespaces, string identifier);
     }
 }
