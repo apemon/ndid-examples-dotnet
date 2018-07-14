@@ -32,7 +32,7 @@ namespace idp.Controllers
             iden.NameSpace = request.NameSpace;
             iden.Identifier = request.Identifier;
             await _ndid.CreateNewIdentity(iden);
-            throw new NotImplementedException();
+            return NoContent();
         }
 
         [HttpPost]

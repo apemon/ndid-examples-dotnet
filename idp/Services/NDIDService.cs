@@ -66,7 +66,6 @@ namespace idp.Services
             newIdentity.IAL = 2.3m;
             _db.SaveAccessorSign(newIdentity.ReferenceId, sid);
             _db.SaveReference(newIdentity.ReferenceId, "sid", sid);
-            //_db.SaveUser(newUser);
             // 4. check response from api reqeust
             using (HttpClient client = new HttpClient())
             {
@@ -78,6 +77,10 @@ namespace idp.Services
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(url, content).Result;
                 if (!result.IsSuccessStatusCode) throw new Exception();
+                string resultJson = await result.Content.ReadAsStringAsync();
+                NDIDCallbackRequestModel model = JsonConvert.DeserializeObject<NDIDCallbackRequestModel>(resultJson);
+                _db.SaveReference(newIdentity.ReferenceId, "accessor_id", model.AccessorId);
+                _db.SaveReference(newIdentity.ReferenceId, "request_id", model.RequestId);
             }
         }
 
@@ -92,8 +95,7 @@ namespace idp.Services
         {
             if (model.IsSuccess)
             {
-                _db.SaveReference(model.ReferenceId, "request_id", model.RequestId);
-                _db.SaveReference(model.ReferenceId, "accessor_id", model.AccessorId);
+                // do nothing
             } else
             {
                 _db.RemoveReference(model.ReferenceId);
