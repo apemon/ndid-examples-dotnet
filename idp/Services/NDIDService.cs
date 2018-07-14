@@ -78,7 +78,7 @@ namespace idp.Services
                 var result = client.PostAsync(url, content).Result;
                 if (!result.IsSuccessStatusCode) throw new Exception();
                 string resultJson = await result.Content.ReadAsStringAsync();
-                NDIDCallbackRequestModel model = JsonConvert.DeserializeObject<NDIDCallbackRequestModel>(resultJson);
+                NDIDCallbackIdentityModel model = JsonConvert.DeserializeObject<NDIDCallbackIdentityModel>(resultJson);
                 _db.SaveReference(newIdentity.ReferenceId, "accessor_id", model.AccessorId);
                 _db.SaveReference(newIdentity.ReferenceId, "request_id", model.RequestId);
             }
@@ -91,7 +91,7 @@ namespace idp.Services
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public void HandleCreateIdentityRequestCallback(NDIDCallbackRequestModel model)
+        public void HandleCreateIdentityRequestCallback(NDIDCallbackIdentityModel model)
         {
             if (model.IsSuccess)
             {
@@ -102,7 +102,7 @@ namespace idp.Services
             }
         }
 
-        public async Task HandleCreateIdentityResultCallbackAsync(NDIDCallbackRequestModel model)
+        public async Task HandleCreateIdentityResultCallbackAsync(NDIDCallbackIdentityModel model)
         {
             if (model.IsSuccess)
             {
@@ -130,14 +130,29 @@ namespace idp.Services
             else throw new ApplicationException();
         }
 
-        void INDIDService.HandleCreateIdentityResultCallback(NDIDCallbackRequestModel model)
+        void INDIDService.HandleCreateIdentityResultCallback(NDIDCallbackIdentityModel model)
         {
             throw new NotImplementedException();
         }
 
-        public Task HandleCreateIdentityRequestCallbackAsync(NDIDCallbackRequestModel model)
+        public Task HandleCreateIdentityRequestCallbackAsync(NDIDCallbackIdentityModel model)
         {
             throw new NotImplementedException();
+        }
+
+        public void HandleIncomingRequestCallback(NDIDCallbackRequestModel model)
+        {
+            _db.SaveUserRequest(model.Namespace, model.Identifier, model.RequestId, model);
+        }
+
+        public Task HandleIncomingRequestCallbackAsync(NDIDCallbackRequestModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<NDIDCallbackRequestModel> ListUserRequest(string namespaces, string identifier)
+        {
+            return _db.ListUserRequest(namespaces, identifier);
         }
     }
 }

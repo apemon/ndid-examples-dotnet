@@ -24,6 +24,13 @@ namespace idp.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        [Route("requests/{namespaces}/{identifier}")]
+        public IActionResult ListUserRequests([FromRoute] string namespaces, string identifier)
+        {
+            return Ok(_ndid.ListUserRequest(namespaces, identifier));
+        }
+
         [HttpPost]
         [Route("identity")]
         public async Task<IActionResult> CreateNewIdentity([FromBody] IdentityRequest request)

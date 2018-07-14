@@ -70,6 +70,20 @@ namespace idp_test
             Assert.Throws< NullReferenceException>(() => _db.GetReferecne(referenceId, key1));
         }
 
+        [Fact]
+        public void SaveAndGetUserRequest()
+        {
+            string namespaces = "cid";
+            string identifier = "1234";
+            NDIDCallbackRequestModel request = new NDIDCallbackRequestModel();
+            request.RequestId = "8707fa402ae174737a5a6cefa7e8d47b836f40fdae7f2b53297ceecda27f3b7c";
+            request.RequestMsg = "dummy Request Message";
+            request.RequestMsgHash = "wl4+u6caNoCDb5nr2JPuYGmeIGZjRECCQAicomlJ38E=";
+            _db.SaveUserRequest(namespaces, identifier, request.RequestId, request);
+            NDIDCallbackRequestModel actual_request = _db.GetUserRequest(namespaces, identifier, request.RequestId);
+            actual_request.Should().BeEquivalentTo<NDIDCallbackRequestModel>(request);
+        }
+
         // clean up data
         public override void Dispose()
         {

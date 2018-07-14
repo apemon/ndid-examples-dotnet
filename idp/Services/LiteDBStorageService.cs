@@ -11,9 +11,10 @@ namespace idp.Services
 {
     public class LiteDBStorageService : IPersistanceStorageService
     {
-        private const string COLLECTION_ACCESSORSIGN = "AccessorSign";
+        private const string COLLECTION_ACCESSORSIGN = "AccessorSigns";
         private const string COLLECTION_REFERENCE = "References";
         private const string COLLECTION_USER = "Users";
+        private const string COLLECTION_REQUEST = "Requests";
 
         private readonly IConfigurationService _config;
         private readonly IMapper _mapper;
@@ -30,8 +31,8 @@ namespace idp.Services
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
-                LiteCollection<NDIDUserModel> users = db.GetCollection<NDIDUserModel>(COLLECTION_USER);
-                NDIDUserModel model = users.FindOne(x => x.NameSpace == namespaces && x.Identifier == identifier);
+                LiteCollection<NDIDUserModel> collection = db.GetCollection<NDIDUserModel>(COLLECTION_USER);
+                NDIDUserModel model = collection.FindOne(x => x.NameSpace == namespaces && x.Identifier == identifier);
                 return model;
             }
         }
@@ -40,8 +41,8 @@ namespace idp.Services
         {
             using(LiteDatabase db = new LiteDatabase(_persistancePath))
             {
-                LiteCollection<AccessorSignDBModel> accessorSigns = db.GetCollection<AccessorSignDBModel>(COLLECTION_ACCESSORSIGN);
-                AccessorSignDBModel model = accessorSigns.Find(x => x.Key == id).FirstOrDefault();
+                LiteCollection<AccessorSignDBModel> collection = db.GetCollection<AccessorSignDBModel>(COLLECTION_ACCESSORSIGN);
+                AccessorSignDBModel model = collection.Find(x => x.Key == id).FirstOrDefault();
                 return model.Sid;
             }
         }
@@ -50,8 +51,8 @@ namespace idp.Services
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
-                LiteCollection<ReferenceDBModel> references = db.GetCollection<ReferenceDBModel>(COLLECTION_REFERENCE);
-                ReferenceDBModel model = references.FindOne(x => x.ReferenceId
+                LiteCollection<ReferenceDBModel> collection = db.GetCollection<ReferenceDBModel>(COLLECTION_REFERENCE);
+                ReferenceDBModel model = collection.FindOne(x => x.ReferenceId
                 == referenceId && x.Type == type);
                 return model.Value;
             }
@@ -61,11 +62,11 @@ namespace idp.Services
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
-                LiteCollection<AccessorSignDBModel> accessorSigns = db.GetCollection<AccessorSignDBModel>(COLLECTION_ACCESSORSIGN);
+                LiteCollection<AccessorSignDBModel> collection = db.GetCollection<AccessorSignDBModel>(COLLECTION_ACCESSORSIGN);
                 AccessorSignDBModel model = new AccessorSignDBModel();
                 model.Key = key;
                 model.Sid = sid;
-                accessorSigns.Insert(model);
+                collection.Insert(model);
             }
         }
 
@@ -73,12 +74,12 @@ namespace idp.Services
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
-                LiteCollection<ReferenceDBModel> references = db.GetCollection<ReferenceDBModel>(COLLECTION_REFERENCE);
+                LiteCollection<ReferenceDBModel> collection = db.GetCollection<ReferenceDBModel>(COLLECTION_REFERENCE);
                 ReferenceDBModel model = new ReferenceDBModel();
                 model.ReferenceId = referenceId;
                 model.Type = type;
                 model.Value = value;
-                references.Insert(model);
+                collection.Insert(model);
             }
         }
 
@@ -86,9 +87,9 @@ namespace idp.Services
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
-                LiteCollection<NDIDUserDBModel> users = db.GetCollection<NDIDUserDBModel>(COLLECTION_USER);
+                LiteCollection<NDIDUserDBModel> collection = db.GetCollection<NDIDUserDBModel>(COLLECTION_USER);
                 NDIDUserDBModel model = _mapper.Map<NDIDUserDBModel>(user);
-                long id = users.Insert(model);
+                long id = collection.Insert(model);
                 return id;
             }
         }
@@ -97,8 +98,41 @@ namespace idp.Services
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
-                LiteCollection<ReferenceDBModel> references = db.GetCollection<ReferenceDBModel>(COLLECTION_REFERENCE);
-                references.Delete(x => x.ReferenceId == referenceId);
+                LiteCollection<ReferenceDBModel> collection = db.GetCollection<ReferenceDBModel>(COLLECTION_REFERENCE);
+                collection.Delete(x => x.ReferenceId == referenceId);
+            }
+        }
+
+        public long SaveUserRequest(string namespaces, string identifier, string requestId, NDIDCallbackRequestModel request)
+        {
+            using (LiteDatabase db = new LiteDatabase(_persistancePath))
+            {
+                LiteCollection<NDIDUserRequestDBModel> collection = db.GetCollection<NDIDUserRequestDBModel>(COLLECTION_REQUEST);
+                NDIDUserRequestDBModel model = _mapper.Map<NDIDUserRequestDBModel>(request);
+                long id = collection.Insert(model);
+                return id;
+            }
+        }
+
+        public NDIDCallbackRequestModel GetUserRequest(string namespaces, string identifier, string requestId)
+        {
+            using (LiteDatabase db = new LiteDatabase(_persistancePath))
+            {
+                LiteCollection<NDIDUserRequestDBModel> collection = db.GetCollection<NDIDUserRequestDBModel>(COLLECTION_REQUEST);
+                NDIDUserRequestDBModel request = collection.FindOne(x => x.Namespace == namespaces && x.Identifier == identifier && x.RequestId == requestId);
+                NDIDCallbackRequestModel result = _mapper.Map<NDIDCallbackRequestModel>(request);
+                return result;
+            }
+        }
+
+        public List<NDIDCallbackRequestModel> ListUserRequest(string namespaces, string identifier)
+        {
+            using (LiteDatabase db = new LiteDatabase(_persistancePath))
+            {
+                LiteCollection<NDIDUserRequestDBModel> collection = db.GetCollection<NDIDUserRequestDBModel>(COLLECTION_REQUEST);
+                List<NDIDUserRequestDBModel> requests = collection.Find(x => x.Namespace == namespaces && x.Identifier == identifier).ToList<NDIDUserRequestDBModel>();
+                List<NDIDCallbackRequestModel> results = requests.Select(x => _mapper.Map<NDIDCallbackRequestModel>(x)).ToList<NDIDCallbackRequestModel>();
+                return results;
             }
         }
     }
@@ -124,5 +158,22 @@ namespace idp.Services
         public string NameSpace { get; set; }
         public string Identifier { get; set; }
         public List<NDIDAccessorModel> Accessors { get; set; }
+    }
+
+    public class NDIDUserRequestDBModel
+    {
+        public long Id { get; set; }
+        public string Namespace { get; set; }
+        public string Identifier { get; set; }
+        public string Type { get; set; }
+        public int Mode { get; set; }
+        public string RequestId { get; set; }
+        public string RequestMsg { get; set; }
+        public string RequestMsgHash { get; set; }
+        public string RequesterNodeId { get; set; }
+        public decimal MinIAL { get; set; }
+        public decimal MinAAL { get; set; }
+        public List<NDIDDataRequestModel> DataRequests { get; set; }
+        public NDIDErrorModel Error { get; set; }
     }
 }

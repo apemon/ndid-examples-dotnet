@@ -9,7 +9,7 @@ services:
       - API_SERVER_ADDRESS=http://api-idp-3:8080
       - CALLBACK_URL=http://examples-idp-3:80
     volumes:
-      - ./persistance:/persistances
+      - ./persistances:/persistances
       - ./keys:/keys
     ports:
       - "8002:80"

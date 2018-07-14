@@ -38,7 +38,7 @@ namespace idp.Controllers
 
         [HttpPost]
         [Route("identity")]
-        public async Task<IActionResult> IdentityResult([FromBody] NDIDCallbackRequestModel request)
+        public async Task<IActionResult> IdentityResult([FromBody] NDIDCallbackIdentityModel request)
         {
             if (request.Type == NDIDConstant.CallbackType.ADD_IDENTITY_REQUEST_RESULT)
             {
@@ -54,8 +54,12 @@ namespace idp.Controllers
 
         [HttpPost]
         [Route("request")]
-        public IActionResult IDPRequest()
+        public IActionResult IDPRequest([FromBody] NDIDCallbackRequestModel request)
         {
+            if(request.Type == NDIDConstant.CallbackType.INCOMING_REQUEST)
+            {
+
+            }
             throw new NotImplementedException();
         }
     }

@@ -12,6 +12,7 @@ namespace idp.Services
         public NDIDMapperConfiguration()
         {
             CreateMap<NDIDUserModel, NDIDUserDBModel>();
+            CreateMap<NDIDCallbackRequestModel, NDIDUserRequestDBModel>();
         }
     }
 }

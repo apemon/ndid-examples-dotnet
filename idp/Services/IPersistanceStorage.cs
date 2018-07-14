@@ -15,5 +15,8 @@ namespace idp.Services
         void RemoveReference(string referenceId);
         long CreateNewUser(NDIDUserModel user);
         NDIDUserModel FindUser(string namespaces, string identifier);
+        long SaveUserRequest(string namespaces, string identifier, string requestId, NDIDCallbackRequestModel request);
+        NDIDCallbackRequestModel GetUserRequest(string namespaces, string identifier, string requestId);
+        List<NDIDCallbackRequestModel> ListUserRequest(string namespaces, string identifier);
     }
 }
