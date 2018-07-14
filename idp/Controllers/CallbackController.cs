@@ -60,6 +60,13 @@ namespace idp.Controllers
             {
                 _ndid.HandleIncomingRequestCallback(request);
             }
+            return NoContent();
+        }
+
+        [HttpPost]
+        [Route("response")]
+        public IActionResult IDPResponse()
+        {
             throw new NotImplementedException();
         }
     }

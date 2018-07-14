@@ -50,25 +50,21 @@ namespace idp.Controllers
             return NoContent();
         }
 
-        [HttpPost]
-        [Route("accessors")]
-        public async Task<IActionResult> AddNewAccessor()
-        {
-            throw new NotImplementedException();
-        }
 
         [HttpPost]
         [Route("accept")]
         public async Task<IActionResult> AcceptAuthentication(AuthenticationRequest request)
         {
-            throw new NotImplementedException();
+            await _ndid.CreateIDPResponse(request.Namespace, request.Identifier, request.RequestId, "accept");
+            return Accepted();
         }
 
         [HttpPost]
         [Route("reject")]
         public async Task<IActionResult> RejectAuthentication(AuthenticationRequest request)
         {
-            throw new NotImplementedException();
+            await _ndid.CreateIDPResponse(request.Namespace, request.Identifier, request.RequestId, "reject");
+            return Accepted();
         }
     }
 }

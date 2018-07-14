@@ -11,5 +11,11 @@ namespace idp.Requests
     {
         [DataMember(Name = "requestId")]
         public string RequestId { get; set; }
+
+        [DataMember(Name = "namespace")]
+        public string Namespace { get; set; }
+
+        [DataMember(Name = "identifier")]
+        public string Identifier { get; set; }
     }
 }

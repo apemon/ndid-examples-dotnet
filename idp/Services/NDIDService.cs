@@ -77,7 +77,7 @@ namespace idp.Services
                 string jsonContent = JsonConvert.SerializeObject(newIdentity);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(url, content).Result;
-                if (!result.IsSuccessStatusCode) throw new Exception();
+                if (!result.IsSuccessStatusCode) throw new ApplicationException();
                 string resultJson = await result.Content.ReadAsStringAsync();
                 NDIDCallbackIdentityModel model = JsonConvert.DeserializeObject<NDIDCallbackIdentityModel>(resultJson);
                 _db.SaveReference(newIdentity.ReferenceId, "accessor_id", model.AccessorId);
@@ -143,6 +143,9 @@ namespace idp.Services
 
         public void HandleIncomingRequestCallback(NDIDCallbackRequestModel model)
         {
+            // check that user exist
+            NDIDUserModel user = _db.FindUser(model.Namespace, model.Identifier);
+            if (user == null) throw new ApplicationException();
             _db.SaveUserRequest(model.Namespace, model.Identifier, model.RequestId, model);
         }
 
@@ -154,6 +157,47 @@ namespace idp.Services
         public List<NDIDCallbackRequestModel> ListUserRequest(string namespaces, string identifier)
         {
             return _db.ListUserRequest(namespaces, identifier);
+        }
+
+        public async Task CreateIDPResponse(string namespaces, string identifier, string requestId, string status)
+        {
+            // get user from parameter
+            NDIDUserModel user = _db.FindUser(namespaces, identifier);
+            if (user == null) throw new ApplicationException();
+            // get request
+            NDIDCallbackRequestModel request = _db.GetUserRequest(namespaces, identifier, requestId);
+            if (request == null) throw new ApplicationException();
+            // get key and sign message
+            // always use first accessor keu for simplicity
+            string keyName = namespaces + "-" + identifier + "-" + "0";
+            string signature = await _dpki.Sign(keyName, request.RequestMsgHash);
+            // construct idp response model
+            NDIDIDPResponseModel model = new NDIDIDPResponseModel();
+            model.ReferenceId = Guid.NewGuid().ToString();
+            model.RequestId = request.RequestId;
+            model.CallbackUrl = new Uri(new Uri(_config.GetCallbackPath()), "api/callback/response").ToString();
+            model.NameSpace = user.NameSpace;
+            model.Identifier = user.Identifier;
+            model.AccessorId = user.Accessors[0].AccessorId;
+            model.Secret = user.Accessors[0].Secret;
+            model.Signature = signature;
+            model.Status = status;
+            model.IAL = 2.3m;
+            model.AAL = 3.0m;
+            // call ndid api
+            using (HttpClient client = new HttpClient())
+            {
+                Uri url = new Uri(_apiServerAddress + "/v2/idp/response");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(
+                    new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                string jsonContent = JsonConvert.SerializeObject(model);
+                StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var result = client.PostAsync(url, content).Result;
+                if (!result.IsSuccessStatusCode) throw new ApplicationException();
+                string resultJson = await result.Content.ReadAsStringAsync();
+                _db.RemoveUserRequest(user.NameSpace, user.Identifier, request.RequestId);
+            }
         }
     }
 }
