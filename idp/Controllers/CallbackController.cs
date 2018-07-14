@@ -51,5 +51,12 @@ namespace idp.Controllers
             else throw new NotImplementedException();
             return NoContent();
         }
+
+        [HttpPost]
+        [Route("request")]
+        public IActionResult IDPRequest()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
