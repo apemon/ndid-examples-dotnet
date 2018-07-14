@@ -145,12 +145,12 @@ namespace idp.Services
             }
         }
 
-        public void RemoveUserRequest(string namespaces, string identifier, string requestId)
+        public void RemoveUserRequest(string requestId)
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))
             {
                 LiteCollection<NDIDUserRequestDBModel> collection = db.GetCollection<NDIDUserRequestDBModel>(COLLECTION_REQUEST);
-                collection.Delete(x => x.Namespace == namespaces && x.Identifier == identifier && x.RequestId == requestId);
+                collection.Delete(x => x.RequestId == requestId);
             }
         }
     }

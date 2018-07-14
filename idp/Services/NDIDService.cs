@@ -117,7 +117,7 @@ namespace idp.Services
                 accessor.AccessorId = accessor_id;
                 accessor.Secret = model.Secret;
                 // update key
-                string newKeyName = sid + "_" + "0";
+                string newKeyName = sid + "-" + "0";
                 // not use base64 file name because windows cannot support filename with "/" charactor
                 _dpki.UpdateKey(sid, newKeyName);
                 string pubKey = await _dpki.GetPubKey(newKeyName);
@@ -196,8 +196,20 @@ namespace idp.Services
                 var result = client.PostAsync(url, content).Result;
                 if (!result.IsSuccessStatusCode) throw new ApplicationException();
                 string resultJson = await result.Content.ReadAsStringAsync();
-                _db.RemoveUserRequest(user.NameSpace, user.Identifier, request.RequestId);
             }
+        }
+
+        public void HandleResponseResultCallback(NDIDCallbackIdentityModel model)
+        {
+            if (model.IsSuccess)
+            {
+                _db.RemoveUserRequest(model.RequestId);
+            }
+        }
+
+        public Task HandleResponseResultCallbackAsync(NDIDCallbackIdentityModel model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

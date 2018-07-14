@@ -60,14 +60,20 @@ namespace idp.Controllers
             {
                 _ndid.HandleIncomingRequestCallback(request);
             }
+            else throw new NotImplementedException();
             return NoContent();
         }
 
         [HttpPost]
         [Route("response")]
-        public IActionResult IDPResponse()
+        public IActionResult IDPResponse([FromBody] NDIDCallbackIdentityModel request)
         {
-            throw new NotImplementedException();
+            if (request.Type == NDIDConstant.CallbackType.RESPONSE_RESULT)
+            {
+                _ndid.HandleResponseResultCallback(request);
+            }
+            else throw new NotImplementedException();
+            return NoContent();
         }
     }
 }

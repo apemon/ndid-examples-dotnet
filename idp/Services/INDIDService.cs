@@ -15,9 +15,11 @@ namespace idp.Services
         void HandleCreateIdentityResultCallback(NDIDCallbackIdentityModel model);
         void HandleCreateIdentityRequestCallback(NDIDCallbackIdentityModel model);
         void HandleIncomingRequestCallback(NDIDCallbackRequestModel model);
+        void HandleResponseResultCallback(NDIDCallbackIdentityModel model);
         Task HandleCreateIdentityResultCallbackAsync(NDIDCallbackIdentityModel model);
         Task HandleCreateIdentityRequestCallbackAsync(NDIDCallbackIdentityModel model);
         Task HandleIncomingRequestCallbackAsync(NDIDCallbackRequestModel model);
+        Task HandleResponseResultCallbackAsync(NDIDCallbackIdentityModel model);
         List<NDIDCallbackRequestModel> ListUserRequest(string namespaces, string identifier);
         Task CreateIDPResponse(string namespaces, string identifier, string requestId, string status);
     }
