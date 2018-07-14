@@ -47,6 +47,15 @@ namespace idp.Services
             }
         }
 
+        public void RemoveAccessorSign(string id)
+        {
+            using (LiteDatabase db = new LiteDatabase(_persistancePath))
+            {
+                LiteCollection<AccessorSignDBModel> collection = db.GetCollection<AccessorSignDBModel>(COLLECTION_ACCESSORSIGN);
+                collection.Delete(x => x.Key == id);
+            }
+        }
+
         public string GetReferecne(string referenceId, string type)
         {
             using (LiteDatabase db = new LiteDatabase(_persistancePath))

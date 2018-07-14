@@ -45,6 +45,7 @@ namespace idp.Services
         {
             _logger.LogInformation(text);
             string sid = _db.GetAccessorSign(key);
+            _db.RemoveAccessorSign(key);
             return await _dpki.Sign(sid, text);
         }
 

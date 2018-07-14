@@ -58,7 +58,7 @@ namespace idp.Controllers
         {
             if(request.Type == NDIDConstant.CallbackType.INCOMING_REQUEST)
             {
-
+                _ndid.HandleIncomingRequestCallback(request);
             }
             throw new NotImplementedException();
         }
