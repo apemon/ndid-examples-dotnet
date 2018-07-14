@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "idp-test": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "PERSISTANCEPATH": "D:/dotnet-project/persistance-test"
+      }
+    }
+  }
+}

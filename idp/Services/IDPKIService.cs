@@ -10,5 +10,6 @@ namespace idp.Services
         Task GenNewKey(string keyName);
         Task<string> GetPubKey(string keyName);
         Task<string> Sign(string key, string text);
+        Task UpdateKey(string oldKeyName, string newKeyName);
     }
 }

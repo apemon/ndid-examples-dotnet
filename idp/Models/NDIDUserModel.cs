@@ -16,16 +16,16 @@ namespace idp.Models
         public string Identifier { get; set; }
 
         [DataMember(Name = "accessors")]
-        public Dictionary<string, NDIDAccessorModel> Accessors { get; set; }
+        public List<NDIDAccessorModel> Accessors { get; set; }
 
         public NDIDUserModel()
         {
-            Accessors = new Dictionary<string, NDIDAccessorModel>();
+            Accessors = new List<NDIDAccessorModel>();
         }
 
         public void AddAccessor(string accessorId, NDIDAccessorModel model)
         {
-            Accessors.Add(accessorId, model);
+            Accessors.Add(model);
         }
 
         public string GetSId(string accessorId)

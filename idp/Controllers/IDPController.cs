@@ -15,10 +15,10 @@ namespace idp.Controllers
     [Route("api/IDP")]
     public class IDPController : Controller
     {
-        private NDIDService _ndid;
+        private INDIDService _ndid;
         private ILogger _logger;
 
-        public IDPController(NDIDService ndid, ILogger<IDPController> logger)
+        public IDPController(INDIDService ndid, ILogger<IDPController> logger)
         {
             _ndid = ndid;
             _logger = logger;

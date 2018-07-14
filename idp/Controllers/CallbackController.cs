@@ -14,11 +14,11 @@ namespace idp.Controllers
     [Route("api/callback")]
     public class CallbackController : Controller
     {
-        private NDIDService _ndid;
+        private INDIDService _ndid;
         private ILogger _logger;
         private IPersistanceStorageService _db;
 
-        public CallbackController(NDIDService ndid, ILogger<CallbackController> logger, IPersistanceStorageService db)
+        public CallbackController(INDIDService ndid, ILogger<CallbackController> logger, IPersistanceStorageService db)
         {
             _ndid = ndid;
             _logger = logger;

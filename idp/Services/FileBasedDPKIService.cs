@@ -104,5 +104,10 @@ namespace idp.Services
             Array.Copy(bs, 0, padded, size - bs.Length, bs.Length);
             return padded;
         }
+
+        public Task UpdateKey(string oldKeyName, string newKeyName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

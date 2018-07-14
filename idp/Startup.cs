@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using AutoMapper;
 
 namespace idp
 {
@@ -22,6 +23,7 @@ namespace idp
         }
 
         public IConfiguration Configuration { get; }
+        private AutoMapper.MapperConfiguration _mapperConfiguration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -37,7 +39,14 @@ namespace idp
             // Enable CORS
             services.AddCors();
 
+            // Enable Automapper
+            _mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new NDIDMapperConfiguration());
+            });
+
             // Add application services via dependencies injection
+            services.AddTransient<IMapper>(sp => _mapperConfiguration.CreateMapper());
             services.AddTransient<IConfigurationService, EnvironmentConfigurationService>();
             services.AddTransient<INDIDService, NDIDService>();
             services.AddTransient<IDPKIService, FileBasedDPKIServicec>();
