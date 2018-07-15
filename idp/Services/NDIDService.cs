@@ -77,11 +77,17 @@ namespace idp.Services
                 string jsonContent = JsonConvert.SerializeObject(newIdentity);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(url, content).Result;
-                if (!result.IsSuccessStatusCode) throw new ApplicationException();
                 string resultJson = await result.Content.ReadAsStringAsync();
-                NDIDCallbackIdentityModel model = JsonConvert.DeserializeObject<NDIDCallbackIdentityModel>(resultJson);
-                _db.SaveReference(newIdentity.ReferenceId, "accessor_id", model.AccessorId);
-                _db.SaveReference(newIdentity.ReferenceId, "request_id", model.RequestId);
+                if (result.IsSuccessStatusCode)
+                {
+                    NDIDCallbackIdentityModel model = JsonConvert.DeserializeObject<NDIDCallbackIdentityModel>(resultJson);
+                    _db.SaveReference(newIdentity.ReferenceId, "accessor_id", model.AccessorId);
+                    _db.SaveReference(newIdentity.ReferenceId, "request_id", model.RequestId);
+                } else
+                {
+                    NDIDCallbackRequestModel model = JsonConvert.DeserializeObject<NDIDCallbackRequestModel>(resultJson);
+                    throw new ApplicationException(model.Error.Message);
+                }
             }
         }
 
@@ -210,6 +216,11 @@ namespace idp.Services
         public Task HandleResponseResultCallbackAsync(NDIDCallbackIdentityModel model)
         {
             throw new NotImplementedException();
+        }
+
+        public List<NDIDUserModel> ListUser()
+        {
+            return _db.ListUser();
         }
     }
 }

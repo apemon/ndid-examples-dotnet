@@ -80,7 +80,10 @@ namespace idp
             // Exception handling
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             // Request/Response logging
-            app.UseMiddleware<RequestLoggingMiddleware>();
+            if(env.IsDevelopment())
+            {
+                app.UseMiddleware<RequestLoggingMiddleware>();
+            }
 
             app.UseMvc();
         }

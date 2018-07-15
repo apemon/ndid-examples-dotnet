@@ -31,6 +31,13 @@ namespace idp.Controllers
             return Ok(_ndid.ListUserRequest(namespaces, identifier));
         }
 
+        [HttpGet]
+        [Route("users")]
+        public IActionResult ListUser()
+        {
+            return Ok(_ndid.ListUser());
+        }
+
         [HttpPost]
         [Route("identity")]
         public async Task<IActionResult> CreateNewIdentity([FromBody] IdentityRequest request)

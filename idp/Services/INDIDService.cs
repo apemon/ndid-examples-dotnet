@@ -22,5 +22,6 @@ namespace idp.Services
         Task HandleResponseResultCallbackAsync(NDIDCallbackIdentityModel model);
         List<NDIDCallbackRequestModel> ListUserRequest(string namespaces, string identifier);
         Task CreateIDPResponse(string namespaces, string identifier, string requestId, string status);
+        List<NDIDUserModel> ListUser();
     }
 }

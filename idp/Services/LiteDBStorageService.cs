@@ -153,6 +153,16 @@ namespace idp.Services
                 collection.Delete(x => x.RequestId == requestId);
             }
         }
+
+        public List<NDIDUserModel> ListUser()
+        {
+            using (LiteDatabase db = new LiteDatabase(_persistancePath))
+            {
+                LiteCollection<NDIDUserModel> collection = db.GetCollection<NDIDUserModel>(COLLECTION_USER);
+                List<NDIDUserModel> models = collection.FindAll().ToList<NDIDUserModel>();
+                return models;
+            }
+        }
     }
 
     public class AccessorSignDBModel

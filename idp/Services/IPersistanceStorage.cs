@@ -20,5 +20,6 @@ namespace idp.Services
         NDIDCallbackRequestModel GetUserRequest(string namespaces, string identifier, string requestId);
         List<NDIDCallbackRequestModel> ListUserRequest(string namespaces, string identifier);
         void RemoveUserRequest(string requestId);
+        List<NDIDUserModel> ListUser();
     }
 }

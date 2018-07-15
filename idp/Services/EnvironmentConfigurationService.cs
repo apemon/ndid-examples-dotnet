@@ -40,6 +40,11 @@ namespace idp.Services
             return _GetConfig("CALLBACK_URL");
         }
 
+        public string GetEnvironment()
+        {
+            return _GetConfig("ASPNETCORE_ENVIRONMENT");
+        }
+
         private string _GetConfig(string key)
         {
             if (!_configs.ContainsKey(key))
