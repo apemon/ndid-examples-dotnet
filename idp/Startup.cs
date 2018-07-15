@@ -85,6 +85,10 @@ namespace idp
                 app.UseMiddleware<RequestLoggingMiddleware>();
             }
 
+            // use static file
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseMvc();
         }
     }

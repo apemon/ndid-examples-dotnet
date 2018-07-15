@@ -79,6 +79,8 @@ namespace idp_test
             request.RequestId = "8707fa402ae174737a5a6cefa7e8d47b836f40fdae7f2b53297ceecda27f3b7c";
             request.RequestMsg = "dummy Request Message";
             request.RequestMsgHash = "wl4+u6caNoCDb5nr2JPuYGmeIGZjRECCQAicomlJ38E=";
+            request.Namespace = namespaces;
+            request.Identifier = identifier;
             _db.SaveUserRequest(namespaces, identifier, request.RequestId, request);
             NDIDCallbackRequestModel actual_request = _db.GetUserRequest(namespaces, identifier, request.RequestId);
             actual_request.Should().BeEquivalentTo<NDIDCallbackRequestModel>(request);
