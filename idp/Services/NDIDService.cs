@@ -200,8 +200,16 @@ namespace idp.Services
                 string jsonContent = JsonConvert.SerializeObject(model);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 var result = client.PostAsync(url, content).Result;
-                if (!result.IsSuccessStatusCode) throw new ApplicationException();
                 string resultJson = await result.Content.ReadAsStringAsync();
+                if (!result.IsSuccessStatusCode)
+                {
+                    NDIDCallbackRequestModel err = JsonConvert.DeserializeObject<NDIDCallbackRequestModel>(resultJson);
+                    if(err.Error.Code == "20025" || err.Error.Code == "20026")
+                    {
+                        _db.RemoveUserRequest(model.RequestId);
+                        throw new ApplicationException("remove");
+                    } else throw new ApplicationException(err.Error.Message);
+                }
             }
         }
 
