@@ -60,7 +60,7 @@ namespace idp.Controllers
 
         [HttpPost]
         [Route("accept")]
-        public async Task<IActionResult> AcceptAuthentication(AuthenticationRequest request)
+        public async Task<IActionResult> AcceptAuthentication([FromBody] AuthenticationRequest request)
         {
             await _ndid.CreateIDPResponse(request.Namespace, request.Identifier, request.RequestId, "accept");
             return Accepted();
@@ -68,7 +68,7 @@ namespace idp.Controllers
 
         [HttpPost]
         [Route("reject")]
-        public async Task<IActionResult> RejectAuthentication(AuthenticationRequest request)
+        public async Task<IActionResult> RejectAuthentication([FromBody] AuthenticationRequest request)
         {
             await _ndid.CreateIDPResponse(request.Namespace, request.Identifier, request.RequestId, "reject");
             return Accepted();
