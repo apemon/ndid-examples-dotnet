@@ -15,7 +15,7 @@
       "environmentVariables": {
         "PERSISTANCEPATH": "D:/dotnet-project/persistance",
         "KEYPATH": "D:/dotnet-project/persistance/keys",
-        "API_SERVER_ADDRESS": "http://159.89.198.232:8102",
+        "API_SERVER_ADDRESS": "http://example-idp:8102",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "CALLBACK_URL": "http://examples-idp-3:80"
       }

@@ -176,7 +176,7 @@ namespace idp.Services
             // get key and sign message
             // always use first accessor keu for simplicity
             string keyName = namespaces + "-" + identifier + "-" + "0";
-            string signature = await _dpki.Sign(keyName, request.RequestMsgHash);
+            string signature = await _dpki.Sign(keyName, request.RequestMsgHash, true);
             // construct idp response model
             NDIDIDPResponseModel model = new NDIDIDPResponseModel();
             model.ReferenceId = Guid.NewGuid().ToString();

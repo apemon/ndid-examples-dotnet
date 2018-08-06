@@ -8,6 +8,7 @@ services:
       - PERSISTANCEPATH=/persistances
       - API_SERVER_ADDRESS=http://api-idp-3:8080
       - CALLBACK_URL=http://examples-idp-3:80
+      - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - ./persistances:/persistances
       - ./keys:/keys

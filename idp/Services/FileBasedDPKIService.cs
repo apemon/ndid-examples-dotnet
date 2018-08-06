@@ -71,6 +71,11 @@ namespace idp.Services
 
         public Task<string> Sign(string key, string text)
         {
+            return Sign(key, text, false);
+        }
+
+        public Task<string> Sign(string key, string text, bool noPadding)
+        {
             string fileName = Path.Combine(_keyPath, key + ".asc");
             using (TextReader privReader = new StringReader(File.ReadAllText(fileName)))
             {
@@ -81,7 +86,9 @@ namespace idp.Services
                 using(RSA rsa = RSA.Create())
                 {
                     rsa.ImportParameters(rsaParams);
-                    byte[] signedByte = rsa.SignHash(Convert.FromBase64String(text) , HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                    byte[] signedByte;
+                    if (noPadding) signedByte = rsa.SignHash(Convert.FromBase64String(text), HashAlgorithmName.SHA256, null);
+                    else signedByte = rsa.SignHash(Convert.FromBase64String(text) , HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
                     signedResult = Convert.ToBase64String(signedByte);
                 }
                 return Task.FromResult(signedResult);
