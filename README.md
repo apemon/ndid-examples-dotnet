@@ -62,15 +62,20 @@ docker-compose up -d
 Start this project (finally)
 ```
 ### Clone examples repo
-git clone https://github.com/ndidplatform/examples.git
+git clone https://github.com/apemon/ndid-examples-dotnet.git
 
 ### Build the `examples` docker image
-cd examples
-cd docker
+cd ndid-examples-dotnet
 docker-compose -f docker-compose.build.yml build --no-cache
 
 ### Run the examples components
-docker-compose up -d
+docker-compose -f docker-compose.yml up -d
+
+### Set the callback url for ndid api
+curl --header "Content-Type: application/json" --request POST --data '{
+    "incoming_request_url": "http://examples-idp-3:80/api/callback/request",
+    "accessor_sign_url": "http://examples-idp-3:80/api/callback/accessor"
+}' http://localhost:8102/v2/idp/callback
 ```
 
 Now, you can go to port 8000-8002 for idp and port 9000 for rp respectively.
