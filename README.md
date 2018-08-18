@@ -6,6 +6,9 @@ This project is an example of IdP application on NDID platform with ASP.Net Core
 
 The latest version of NDID (v0.6) require that hash message for sign will need no padding, which standard crypto library of .Net cannot support.
 
+PS. the source code for web UI that use in this project can be find here 
+https://github.com/apemon/ndid-examples-dotnet-web.git 
+
 ## Run in Docker
 
 Required
